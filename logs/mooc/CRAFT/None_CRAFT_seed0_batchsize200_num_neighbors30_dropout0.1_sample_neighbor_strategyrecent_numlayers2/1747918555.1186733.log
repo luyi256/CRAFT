@@ -1,0 +1,850 @@
+2025-05-22 20:55:56,155 - root - INFO - The dataset has 411749 interactions, involving 7144 different nodes
+2025-05-22 20:55:56,157 - root - INFO - The training dataset has 288224 interactions, involving 6625 different nodes
+2025-05-22 20:55:56,157 - root - INFO - The validation dataset has 61762 interactions, involving 2599 different nodes
+2025-05-22 20:55:56,157 - root - INFO - The test dataset has 61763 interactions, involving 2412 different nodes
+2025-05-22 20:55:58,190 - root - INFO - ********** Run 1 starts. **********
+2025-05-22 20:55:58,190 - root - INFO - configuration is Namespace(dataset_name='mooc', batch_size=200, multi_negs_batch_size=20, model_name='CRAFT', gpu=0, output_dim=172, embedding_size=64, num_neighbors=30, save_model_path='./saved_models/', dataset_path='./data/', sample_neighbor_strategy='recent', time_scaling_factor=1e-06, num_walk_heads=8, num_heads=2, walk_length=1, time_gap=2000, time_feat_dim=100, position_feat_dim=172, edge_bank_memory_mode='unlimited_memory', time_window_mode='fixed_proportion', patch_size=1, channel_embedding_dim=50, max_input_sequence_length=64, learning_rate=0.0001, dropout=0.1, scale=12, num_epochs=200, optimizer='Adam', weight_decay=0.0, patience=15, val_ratio=0.15, test_ratio=0.15, num_runs=1, seed=0, test_interval_epochs=10, is_bipartite=False, negative_sample_strategy='random', load_best_configs=False, use_edge_feat=False, load_pretrained=False, use_node_feat=False, use_bn=False, use_bias=False, use_act=False, act_type='ReLU', use_feat=False, time_enc=False, use_mixer=False, use_positional=False, use_neighbor=False, use_layernorm=False, num_layers=2, num_mixer_layers=2, merge='cat', version=None, hidden_dropout=0.1, hidden_act='gelu', loss='BPR', inner_size=256, attn_dropout_prob=0.1, layer_norm_eps=1e-12, initializer_range=0.02, shuffle=True, use_pos=True, step=1, use_mean=False, output_cat_time_intervals=True, output_cat_repeat_times=True, input_cat_time_intervals=False, num_output_layer=2, collision_check=True, emb_dropout_prob=0.1, use_mrr_val=False, skip_connection=False, device='cuda:0', save_model_name='CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_sample_neighbor_strategyrecent_numlayers2', user_size=7047, item_size=97, node_size=7144, dst_min_idx=7048, src_min_idx=1)
+2025-05-22 20:55:58,190 - root - INFO - ['train_link_prediction.py', '--dataset_name', 'mooc', '--model_name', 'CRAFT', '--batch_size', '200', '--gpu', '0', '--num_neighbors', '30', '--embedding_size', '64', '--loss', 'BPR', '--hidden_dropout', '0.1', '--attn_dropout_prob', '0.1', '--emb_dropout_prob', '0.1', '--use_pos', '--output_cat_repeat_times', '--output_cat_time_intervals', '--num_output_layer', '2', '--collision_check', '--shuffle']
+2025-05-22 20:55:58,222 - root - INFO - model -> CRAFT(
+  (node_embedding): Embedding(98, 64, padding_idx=0)
+  (position_embedding): Embedding(30, 64)
+  (cross_attention): CrossAttention(
+    (layer): ModuleList(
+      (0-1): 2 x CrossAttentionLayer(
+        (multi_head_attention): MultiHeadCrossAttentionbyHand(
+          (query): Linear(in_features=64, out_features=64, bias=True)
+          (key): Linear(in_features=64, out_features=64, bias=True)
+          (value): Linear(in_features=64, out_features=64, bias=True)
+          (softmax): Softmax(dim=-1)
+          (attn_dropout): Dropout(p=0.1, inplace=False)
+          (dense): Linear(in_features=64, out_features=64, bias=True)
+          (LayerNorm): LayerNorm((64,), eps=1e-12, elementwise_affine=True)
+          (out_dropout): Dropout(p=0.1, inplace=False)
+        )
+        (feed_forward): FeedForward4CrossAttn(
+          (dense_1): Linear(in_features=64, out_features=256, bias=True)
+          (LayerNorm): LayerNorm((64,), eps=1e-12, elementwise_affine=True)
+          (dense_2): Linear(in_features=256, out_features=64, bias=True)
+          (dropout): Dropout(p=0.1, inplace=False)
+        )
+      )
+    )
+  )
+  (time_projection): MLP(
+    (lins): ModuleList(
+      (0): Linear(in_features=1, out_features=64, bias=True)
+    )
+  )
+  (repeat_times_projection): MLP(
+    (lins): ModuleList(
+      (0): Linear(in_features=1, out_features=64, bias=True)
+    )
+  )
+  (output_layer): MLP(
+    (lins): ModuleList(
+      (0): Linear(in_features=192, out_features=192, bias=True)
+      (1): Linear(in_features=192, out_features=1, bias=True)
+    )
+    (dropout): Dropout(p=0.1, inplace=False)
+    (act): PReLU(num_parameters=1)
+  )
+  (LayerNorm): LayerNorm((64,), eps=1e-12, elementwise_affine=True)
+  (LayerNorm_time_intervals): LayerNorm((64,), eps=1e-12, elementwise_affine=True)
+  (LayerNorm_repeat_times): LayerNorm((64,), eps=1e-12, elementwise_affine=True)
+  (dropout): Dropout(p=0.1, inplace=False)
+  (emb_dropout): Dropout(p=0.1, inplace=False)
+  (loss_fct): BPRLoss()
+)
+2025-05-22 20:55:58,223 - root - INFO - model name: CRAFT, #parameters: 584200 B, 570.5078125 KB, 0.5571365356445312 MB.
+2025-05-22 20:57:10,843 - root - INFO - Epoch: 1, learning rate: 0.0001, train loss: 0.16916672
+2025-05-22 20:57:10,878 - root - INFO - train average_precision, 0.88756560
+2025-05-22 20:57:10,879 - root - INFO - train roc_auc, 0.91872232
+2025-05-22 20:57:22,648 - root - INFO - validate average_precision, 0.91131132
+2025-05-22 20:57:22,648 - root - INFO - validate roc_auc, 0.92715206
+2025-05-22 20:57:22,648 - root - INFO - validate val_loss, 0.16024562
+2025-05-22 20:57:22,649 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 20:58:28,230 - root - INFO - Epoch: 2, learning rate: 0.0001, train loss: 0.09099464
+2025-05-22 20:58:28,234 - root - INFO - train average_precision, 0.94185174
+2025-05-22 20:58:28,235 - root - INFO - train roc_auc, 0.95910171
+2025-05-22 20:58:39,844 - root - INFO - validate average_precision, 0.93648155
+2025-05-22 20:58:39,844 - root - INFO - validate roc_auc, 0.94938002
+2025-05-22 20:58:39,844 - root - INFO - validate val_loss, 0.11428433
+2025-05-22 20:58:39,845 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 20:59:45,462 - root - INFO - Epoch: 3, learning rate: 0.0001, train loss: 0.08019075
+2025-05-22 20:59:45,466 - root - INFO - train average_precision, 0.95221462
+2025-05-22 20:59:45,466 - root - INFO - train roc_auc, 0.96618226
+2025-05-22 20:59:57,019 - root - INFO - validate average_precision, 0.94724913
+2025-05-22 20:59:57,022 - root - INFO - validate roc_auc, 0.95774736
+2025-05-22 20:59:57,022 - root - INFO - validate val_loss, 0.10412206
+2025-05-22 20:59:57,023 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:01:02,529 - root - INFO - Epoch: 4, learning rate: 0.0001, train loss: 0.07382543
+2025-05-22 21:01:02,531 - root - INFO - train average_precision, 0.95555696
+2025-05-22 21:01:02,532 - root - INFO - train roc_auc, 0.96881959
+2025-05-22 21:01:14,086 - root - INFO - validate average_precision, 0.94528777
+2025-05-22 21:01:14,086 - root - INFO - validate roc_auc, 0.95710276
+2025-05-22 21:01:14,087 - root - INFO - validate val_loss, 0.09938055
+2025-05-22 21:02:19,509 - root - INFO - Epoch: 5, learning rate: 0.0001, train loss: 0.07108192
+2025-05-22 21:02:19,512 - root - INFO - train average_precision, 0.95718448
+2025-05-22 21:02:19,512 - root - INFO - train roc_auc, 0.97010089
+2025-05-22 21:02:31,079 - root - INFO - validate average_precision, 0.94892832
+2025-05-22 21:02:31,080 - root - INFO - validate roc_auc, 0.96051714
+2025-05-22 21:02:31,080 - root - INFO - validate val_loss, 0.09398851
+2025-05-22 21:02:31,080 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:03:36,682 - root - INFO - Epoch: 6, learning rate: 0.0001, train loss: 0.06906263
+2025-05-22 21:03:36,683 - root - INFO - train average_precision, 0.95838827
+2025-05-22 21:03:36,683 - root - INFO - train roc_auc, 0.97096628
+2025-05-22 21:03:48,266 - root - INFO - validate average_precision, 0.95412633
+2025-05-22 21:03:48,266 - root - INFO - validate roc_auc, 0.96419211
+2025-05-22 21:03:48,266 - root - INFO - validate val_loss, 0.08681536
+2025-05-22 21:03:48,267 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:04:53,780 - root - INFO - Epoch: 7, learning rate: 0.0001, train loss: 0.06769102
+2025-05-22 21:04:53,801 - root - INFO - train average_precision, 0.95898565
+2025-05-22 21:04:53,801 - root - INFO - train roc_auc, 0.97159558
+2025-05-22 21:05:05,385 - root - INFO - validate average_precision, 0.95482317
+2025-05-22 21:05:05,385 - root - INFO - validate roc_auc, 0.96469910
+2025-05-22 21:05:05,385 - root - INFO - validate val_loss, 0.08445704
+2025-05-22 21:05:05,386 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:06:11,151 - root - INFO - Epoch: 8, learning rate: 0.0001, train loss: 0.06685746
+2025-05-22 21:06:11,155 - root - INFO - train average_precision, 0.96045054
+2025-05-22 21:06:11,155 - root - INFO - train roc_auc, 0.97244704
+2025-05-22 21:06:22,730 - root - INFO - validate average_precision, 0.95479723
+2025-05-22 21:06:22,730 - root - INFO - validate roc_auc, 0.96514548
+2025-05-22 21:06:22,731 - root - INFO - validate val_loss, 0.08352451
+2025-05-22 21:07:29,107 - root - INFO - Epoch: 9, learning rate: 0.0001, train loss: 0.06601595
+2025-05-22 21:07:29,131 - root - INFO - train average_precision, 0.96106372
+2025-05-22 21:07:29,132 - root - INFO - train roc_auc, 0.97288971
+2025-05-22 21:07:40,682 - root - INFO - validate average_precision, 0.95795293
+2025-05-22 21:07:40,682 - root - INFO - validate roc_auc, 0.96680036
+2025-05-22 21:07:40,682 - root - INFO - validate val_loss, 0.08516672
+2025-05-22 21:07:40,683 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:08:46,026 - root - INFO - Epoch: 10, learning rate: 0.0001, train loss: 0.06409829
+2025-05-22 21:08:46,047 - root - INFO - train average_precision, 0.96239683
+2025-05-22 21:08:46,047 - root - INFO - train roc_auc, 0.97369150
+2025-05-22 21:08:57,605 - root - INFO - validate average_precision, 0.95634435
+2025-05-22 21:08:57,605 - root - INFO - validate roc_auc, 0.96625696
+2025-05-22 21:08:57,605 - root - INFO - validate val_loss, 0.08380763
+2025-05-22 21:10:02,864 - root - INFO - Epoch: 11, learning rate: 0.0001, train loss: 0.06337342
+2025-05-22 21:10:02,867 - root - INFO - train average_precision, 0.96237238
+2025-05-22 21:10:02,867 - root - INFO - train roc_auc, 0.97392275
+2025-05-22 21:10:14,421 - root - INFO - validate average_precision, 0.95753554
+2025-05-22 21:10:14,421 - root - INFO - validate roc_auc, 0.96791372
+2025-05-22 21:10:14,421 - root - INFO - validate val_loss, 0.08014629
+2025-05-22 21:11:19,552 - root - INFO - Epoch: 12, learning rate: 0.0001, train loss: 0.06339487
+2025-05-22 21:11:19,555 - root - INFO - train average_precision, 0.96226611
+2025-05-22 21:11:19,555 - root - INFO - train roc_auc, 0.97399505
+2025-05-22 21:11:31,064 - root - INFO - validate average_precision, 0.95607953
+2025-05-22 21:11:31,064 - root - INFO - validate roc_auc, 0.96482530
+2025-05-22 21:11:31,064 - root - INFO - validate val_loss, 0.08522996
+2025-05-22 21:12:36,165 - root - INFO - Epoch: 13, learning rate: 0.0001, train loss: 0.06291552
+2025-05-22 21:12:36,167 - root - INFO - train average_precision, 0.96247682
+2025-05-22 21:12:36,168 - root - INFO - train roc_auc, 0.97396866
+2025-05-22 21:12:47,676 - root - INFO - validate average_precision, 0.95475252
+2025-05-22 21:12:47,676 - root - INFO - validate roc_auc, 0.96609214
+2025-05-22 21:12:47,676 - root - INFO - validate val_loss, 0.08152125
+2025-05-22 21:13:52,901 - root - INFO - Epoch: 14, learning rate: 0.0001, train loss: 0.05986110
+2025-05-22 21:13:52,915 - root - INFO - train average_precision, 0.96406579
+2025-05-22 21:13:52,915 - root - INFO - train roc_auc, 0.97499141
+2025-05-22 21:14:04,447 - root - INFO - validate average_precision, 0.95791334
+2025-05-22 21:14:04,447 - root - INFO - validate roc_auc, 0.96742243
+2025-05-22 21:14:04,447 - root - INFO - validate val_loss, 0.07942127
+2025-05-22 21:15:09,738 - root - INFO - Epoch: 15, learning rate: 0.0001, train loss: 0.06086338
+2025-05-22 21:15:09,744 - root - INFO - train average_precision, 0.96390367
+2025-05-22 21:15:09,744 - root - INFO - train roc_auc, 0.97470725
+2025-05-22 21:15:21,263 - root - INFO - validate average_precision, 0.95885628
+2025-05-22 21:15:21,263 - root - INFO - validate roc_auc, 0.96781492
+2025-05-22 21:15:21,263 - root - INFO - validate val_loss, 0.07847765
+2025-05-22 21:15:21,263 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:16:26,996 - root - INFO - Epoch: 16, learning rate: 0.0001, train loss: 0.06011000
+2025-05-22 21:16:26,999 - root - INFO - train average_precision, 0.96487517
+2025-05-22 21:16:26,999 - root - INFO - train roc_auc, 0.97537189
+2025-05-22 21:16:38,490 - root - INFO - validate average_precision, 0.96016889
+2025-05-22 21:16:38,490 - root - INFO - validate roc_auc, 0.96906101
+2025-05-22 21:16:38,490 - root - INFO - validate val_loss, 0.07672828
+2025-05-22 21:16:38,491 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:17:43,774 - root - INFO - Epoch: 17, learning rate: 0.0001, train loss: 0.06008336
+2025-05-22 21:17:43,779 - root - INFO - train average_precision, 0.96506010
+2025-05-22 21:17:43,779 - root - INFO - train roc_auc, 0.97534156
+2025-05-22 21:17:55,259 - root - INFO - validate average_precision, 0.95881797
+2025-05-22 21:17:55,263 - root - INFO - validate roc_auc, 0.96850381
+2025-05-22 21:17:55,263 - root - INFO - validate val_loss, 0.07756551
+2025-05-22 21:19:00,248 - root - INFO - Epoch: 18, learning rate: 0.0001, train loss: 0.06027519
+2025-05-22 21:19:00,274 - root - INFO - train average_precision, 0.96490351
+2025-05-22 21:19:00,274 - root - INFO - train roc_auc, 0.97523478
+2025-05-22 21:19:11,767 - root - INFO - validate average_precision, 0.95997137
+2025-05-22 21:19:11,768 - root - INFO - validate roc_auc, 0.96923967
+2025-05-22 21:19:11,768 - root - INFO - validate val_loss, 0.07540428
+2025-05-22 21:20:16,924 - root - INFO - Epoch: 19, learning rate: 0.0001, train loss: 0.05821167
+2025-05-22 21:20:16,929 - root - INFO - train average_precision, 0.96603378
+2025-05-22 21:20:16,929 - root - INFO - train roc_auc, 0.97603450
+2025-05-22 21:20:28,425 - root - INFO - validate average_precision, 0.95885127
+2025-05-22 21:20:28,425 - root - INFO - validate roc_auc, 0.96805396
+2025-05-22 21:20:28,425 - root - INFO - validate val_loss, 0.07754470
+2025-05-22 21:21:33,596 - root - INFO - Epoch: 20, learning rate: 0.0001, train loss: 0.05918212
+2025-05-22 21:21:33,598 - root - INFO - train average_precision, 0.96569473
+2025-05-22 21:21:33,599 - root - INFO - train roc_auc, 0.97570474
+2025-05-22 21:21:45,176 - root - INFO - validate average_precision, 0.96133135
+2025-05-22 21:21:45,176 - root - INFO - validate roc_auc, 0.97034353
+2025-05-22 21:21:45,176 - root - INFO - validate val_loss, 0.07298355
+2025-05-22 21:21:45,177 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:22:50,571 - root - INFO - Epoch: 21, learning rate: 0.0001, train loss: 0.05806607
+2025-05-22 21:22:50,575 - root - INFO - train average_precision, 0.96668356
+2025-05-22 21:22:50,575 - root - INFO - train roc_auc, 0.97643717
+2025-05-22 21:23:02,267 - root - INFO - validate average_precision, 0.96270987
+2025-05-22 21:23:02,271 - root - INFO - validate roc_auc, 0.97081106
+2025-05-22 21:23:02,271 - root - INFO - validate val_loss, 0.07429556
+2025-05-22 21:23:02,272 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:24:07,842 - root - INFO - Epoch: 22, learning rate: 0.0001, train loss: 0.05737050
+2025-05-22 21:24:07,845 - root - INFO - train average_precision, 0.96703815
+2025-05-22 21:24:07,845 - root - INFO - train roc_auc, 0.97657737
+2025-05-22 21:24:19,425 - root - INFO - validate average_precision, 0.96063017
+2025-05-22 21:24:19,426 - root - INFO - validate roc_auc, 0.96887821
+2025-05-22 21:24:19,426 - root - INFO - validate val_loss, 0.07531523
+2025-05-22 21:25:24,976 - root - INFO - Epoch: 23, learning rate: 0.0001, train loss: 0.05829520
+2025-05-22 21:25:24,978 - root - INFO - train average_precision, 0.96718062
+2025-05-22 21:25:24,978 - root - INFO - train roc_auc, 0.97645014
+2025-05-22 21:25:36,652 - root - INFO - validate average_precision, 0.96215442
+2025-05-22 21:25:36,652 - root - INFO - validate roc_auc, 0.97046145
+2025-05-22 21:25:36,652 - root - INFO - validate val_loss, 0.07385344
+2025-05-22 21:26:43,024 - root - INFO - Epoch: 24, learning rate: 0.0001, train loss: 0.05645103
+2025-05-22 21:26:43,026 - root - INFO - train average_precision, 0.96798402
+2025-05-22 21:26:43,026 - root - INFO - train roc_auc, 0.97711522
+2025-05-22 21:26:54,550 - root - INFO - validate average_precision, 0.96077494
+2025-05-22 21:26:54,550 - root - INFO - validate roc_auc, 0.97003588
+2025-05-22 21:26:54,550 - root - INFO - validate val_loss, 0.07263699
+2025-05-22 21:27:59,795 - root - INFO - Epoch: 25, learning rate: 0.0001, train loss: 0.05713955
+2025-05-22 21:27:59,795 - root - INFO - train average_precision, 0.96719553
+2025-05-22 21:27:59,796 - root - INFO - train roc_auc, 0.97661886
+2025-05-22 21:28:11,324 - root - INFO - validate average_precision, 0.96369307
+2025-05-22 21:28:11,324 - root - INFO - validate roc_auc, 0.97143788
+2025-05-22 21:28:11,324 - root - INFO - validate val_loss, 0.07065180
+2025-05-22 21:28:11,325 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:29:16,668 - root - INFO - Epoch: 26, learning rate: 0.0001, train loss: 0.05632078
+2025-05-22 21:29:16,672 - root - INFO - train average_precision, 0.96736344
+2025-05-22 21:29:16,672 - root - INFO - train roc_auc, 0.97681382
+2025-05-22 21:29:28,222 - root - INFO - validate average_precision, 0.96180967
+2025-05-22 21:29:28,222 - root - INFO - validate roc_auc, 0.97032711
+2025-05-22 21:29:28,222 - root - INFO - validate val_loss, 0.07216698
+2025-05-22 21:30:33,684 - root - INFO - Epoch: 27, learning rate: 0.0001, train loss: 0.05761417
+2025-05-22 21:30:33,687 - root - INFO - train average_precision, 0.96779590
+2025-05-22 21:30:33,687 - root - INFO - train roc_auc, 0.97688414
+2025-05-22 21:30:45,259 - root - INFO - validate average_precision, 0.96274719
+2025-05-22 21:30:45,259 - root - INFO - validate roc_auc, 0.97160175
+2025-05-22 21:30:45,259 - root - INFO - validate val_loss, 0.06964603
+2025-05-22 21:31:50,734 - root - INFO - Epoch: 28, learning rate: 0.0001, train loss: 0.05748325
+2025-05-22 21:31:50,738 - root - INFO - train average_precision, 0.96713678
+2025-05-22 21:31:50,739 - root - INFO - train roc_auc, 0.97672842
+2025-05-22 21:32:02,307 - root - INFO - validate average_precision, 0.96215074
+2025-05-22 21:32:02,308 - root - INFO - validate roc_auc, 0.97027701
+2025-05-22 21:32:02,308 - root - INFO - validate val_loss, 0.07204479
+2025-05-22 21:33:07,858 - root - INFO - Epoch: 29, learning rate: 0.0001, train loss: 0.05578452
+2025-05-22 21:33:07,859 - root - INFO - train average_precision, 0.96882242
+2025-05-22 21:33:07,860 - root - INFO - train roc_auc, 0.97747763
+2025-05-22 21:33:19,510 - root - INFO - validate average_precision, 0.96297099
+2025-05-22 21:33:19,510 - root - INFO - validate roc_auc, 0.97100052
+2025-05-22 21:33:19,510 - root - INFO - validate val_loss, 0.07124337
+2025-05-22 21:34:25,369 - root - INFO - Epoch: 30, learning rate: 0.0001, train loss: 0.05578816
+2025-05-22 21:34:25,395 - root - INFO - train average_precision, 0.96771929
+2025-05-22 21:34:25,395 - root - INFO - train roc_auc, 0.97699648
+2025-05-22 21:34:37,018 - root - INFO - validate average_precision, 0.96429714
+2025-05-22 21:34:37,018 - root - INFO - validate roc_auc, 0.97230625
+2025-05-22 21:34:37,018 - root - INFO - validate val_loss, 0.06855736
+2025-05-22 21:34:37,018 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:35:42,620 - root - INFO - Epoch: 31, learning rate: 0.0001, train loss: 0.05518146
+2025-05-22 21:35:42,623 - root - INFO - train average_precision, 0.96865362
+2025-05-22 21:35:42,623 - root - INFO - train roc_auc, 0.97758052
+2025-05-22 21:35:54,495 - root - INFO - validate average_precision, 0.96371376
+2025-05-22 21:35:54,495 - root - INFO - validate roc_auc, 0.97175692
+2025-05-22 21:35:54,495 - root - INFO - validate val_loss, 0.06910973
+2025-05-22 21:37:00,359 - root - INFO - Epoch: 32, learning rate: 0.0001, train loss: 0.05465234
+2025-05-22 21:37:00,375 - root - INFO - train average_precision, 0.96875033
+2025-05-22 21:37:00,375 - root - INFO - train roc_auc, 0.97776729
+2025-05-22 21:37:11,896 - root - INFO - validate average_precision, 0.96320243
+2025-05-22 21:37:11,896 - root - INFO - validate roc_auc, 0.97137774
+2025-05-22 21:37:11,896 - root - INFO - validate val_loss, 0.07075360
+2025-05-22 21:38:17,260 - root - INFO - Epoch: 33, learning rate: 0.0001, train loss: 0.05534700
+2025-05-22 21:38:17,264 - root - INFO - train average_precision, 0.96840244
+2025-05-22 21:38:17,264 - root - INFO - train roc_auc, 0.97726989
+2025-05-22 21:38:28,785 - root - INFO - validate average_precision, 0.96380128
+2025-05-22 21:38:28,785 - root - INFO - validate roc_auc, 0.97161334
+2025-05-22 21:38:28,785 - root - INFO - validate val_loss, 0.07025724
+2025-05-22 21:39:34,211 - root - INFO - Epoch: 34, learning rate: 0.0001, train loss: 0.05422620
+2025-05-22 21:39:34,235 - root - INFO - train average_precision, 0.96970695
+2025-05-22 21:39:34,236 - root - INFO - train roc_auc, 0.97823169
+2025-05-22 21:39:45,778 - root - INFO - validate average_precision, 0.96490671
+2025-05-22 21:39:45,778 - root - INFO - validate roc_auc, 0.97253971
+2025-05-22 21:39:45,778 - root - INFO - validate val_loss, 0.06898952
+2025-05-22 21:39:45,779 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:40:51,100 - root - INFO - Epoch: 35, learning rate: 0.0001, train loss: 0.05518816
+2025-05-22 21:40:51,118 - root - INFO - train average_precision, 0.96886934
+2025-05-22 21:40:51,118 - root - INFO - train roc_auc, 0.97774721
+2025-05-22 21:41:02,670 - root - INFO - validate average_precision, 0.96528345
+2025-05-22 21:41:02,672 - root - INFO - validate roc_auc, 0.97276907
+2025-05-22 21:41:02,672 - root - INFO - validate val_loss, 0.06792529
+2025-05-22 21:41:02,672 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:42:07,922 - root - INFO - Epoch: 36, learning rate: 0.0001, train loss: 0.05442582
+2025-05-22 21:42:07,966 - root - INFO - train average_precision, 0.96927109
+2025-05-22 21:42:07,966 - root - INFO - train roc_auc, 0.97786331
+2025-05-22 21:42:19,456 - root - INFO - validate average_precision, 0.96569332
+2025-05-22 21:42:19,458 - root - INFO - validate roc_auc, 0.97294949
+2025-05-22 21:42:19,458 - root - INFO - validate val_loss, 0.06795880
+2025-05-22 21:42:19,458 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:43:24,861 - root - INFO - Epoch: 37, learning rate: 0.0001, train loss: 0.05399233
+2025-05-22 21:43:24,882 - root - INFO - train average_precision, 0.96974535
+2025-05-22 21:43:24,882 - root - INFO - train roc_auc, 0.97809478
+2025-05-22 21:43:36,411 - root - INFO - validate average_precision, 0.96611427
+2025-05-22 21:43:36,411 - root - INFO - validate roc_auc, 0.97307138
+2025-05-22 21:43:36,411 - root - INFO - validate val_loss, 0.06718719
+2025-05-22 21:43:36,412 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:44:42,179 - root - INFO - Epoch: 38, learning rate: 0.0001, train loss: 0.05467189
+2025-05-22 21:44:42,182 - root - INFO - train average_precision, 0.97007930
+2025-05-22 21:44:42,182 - root - INFO - train roc_auc, 0.97828725
+2025-05-22 21:44:53,753 - root - INFO - validate average_precision, 0.96638778
+2025-05-22 21:44:53,753 - root - INFO - validate roc_auc, 0.97333625
+2025-05-22 21:44:53,753 - root - INFO - validate val_loss, 0.06765187
+2025-05-22 21:44:53,754 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:45:59,489 - root - INFO - Epoch: 39, learning rate: 0.0001, train loss: 0.05385746
+2025-05-22 21:45:59,538 - root - INFO - train average_precision, 0.96974606
+2025-05-22 21:45:59,539 - root - INFO - train roc_auc, 0.97814685
+2025-05-22 21:46:11,583 - root - INFO - validate average_precision, 0.96755848
+2025-05-22 21:46:11,585 - root - INFO - validate roc_auc, 0.97423812
+2025-05-22 21:46:11,585 - root - INFO - validate val_loss, 0.06615967
+2025-05-22 21:46:11,590 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 21:47:17,993 - root - INFO - Epoch: 40, learning rate: 0.0001, train loss: 0.05348358
+2025-05-22 21:47:18,015 - root - INFO - train average_precision, 0.96991450
+2025-05-22 21:47:18,015 - root - INFO - train roc_auc, 0.97818713
+2025-05-22 21:47:29,594 - root - INFO - validate average_precision, 0.96653764
+2025-05-22 21:47:29,594 - root - INFO - validate roc_auc, 0.97378608
+2025-05-22 21:47:29,594 - root - INFO - validate val_loss, 0.06716108
+2025-05-22 21:48:34,924 - root - INFO - Epoch: 41, learning rate: 0.0001, train loss: 0.05410041
+2025-05-22 21:48:34,927 - root - INFO - train average_precision, 0.97001700
+2025-05-22 21:48:34,927 - root - INFO - train roc_auc, 0.97826390
+2025-05-22 21:48:46,500 - root - INFO - validate average_precision, 0.96694206
+2025-05-22 21:48:46,500 - root - INFO - validate roc_auc, 0.97405621
+2025-05-22 21:48:46,500 - root - INFO - validate val_loss, 0.06517701
+2025-05-22 21:49:51,860 - root - INFO - Epoch: 42, learning rate: 0.0001, train loss: 0.05425840
+2025-05-22 21:49:51,863 - root - INFO - train average_precision, 0.97000888
+2025-05-22 21:49:51,863 - root - INFO - train roc_auc, 0.97843316
+2025-05-22 21:50:03,443 - root - INFO - validate average_precision, 0.96618160
+2025-05-22 21:50:03,443 - root - INFO - validate roc_auc, 0.97350253
+2025-05-22 21:50:03,443 - root - INFO - validate val_loss, 0.06621969
+2025-05-22 21:51:08,914 - root - INFO - Epoch: 43, learning rate: 0.0001, train loss: 0.05316370
+2025-05-22 21:51:08,962 - root - INFO - train average_precision, 0.97023694
+2025-05-22 21:51:08,962 - root - INFO - train roc_auc, 0.97854581
+2025-05-22 21:51:20,540 - root - INFO - validate average_precision, 0.96677844
+2025-05-22 21:51:20,540 - root - INFO - validate roc_auc, 0.97373773
+2025-05-22 21:51:20,540 - root - INFO - validate val_loss, 0.06532197
+2025-05-22 21:52:26,133 - root - INFO - Epoch: 44, learning rate: 0.0001, train loss: 0.05370208
+2025-05-22 21:52:26,136 - root - INFO - train average_precision, 0.97050041
+2025-05-22 21:52:26,136 - root - INFO - train roc_auc, 0.97845605
+2025-05-22 21:52:37,661 - root - INFO - validate average_precision, 0.96693279
+2025-05-22 21:52:37,661 - root - INFO - validate roc_auc, 0.97379951
+2025-05-22 21:52:37,661 - root - INFO - validate val_loss, 0.06634286
+2025-05-22 21:53:43,029 - root - INFO - Epoch: 45, learning rate: 0.0001, train loss: 0.05353157
+2025-05-22 21:53:43,045 - root - INFO - train average_precision, 0.97053879
+2025-05-22 21:53:43,045 - root - INFO - train roc_auc, 0.97865229
+2025-05-22 21:53:54,552 - root - INFO - validate average_precision, 0.96621521
+2025-05-22 21:53:54,553 - root - INFO - validate roc_auc, 0.97277455
+2025-05-22 21:53:54,553 - root - INFO - validate val_loss, 0.06701314
+2025-05-22 21:55:00,085 - root - INFO - Epoch: 46, learning rate: 0.0001, train loss: 0.05281056
+2025-05-22 21:55:00,088 - root - INFO - train average_precision, 0.97087699
+2025-05-22 21:55:00,089 - root - INFO - train roc_auc, 0.97867719
+2025-05-22 21:55:11,947 - root - INFO - validate average_precision, 0.96715839
+2025-05-22 21:55:11,949 - root - INFO - validate roc_auc, 0.97351793
+2025-05-22 21:55:11,949 - root - INFO - validate val_loss, 0.06675607
+2025-05-22 21:56:17,577 - root - INFO - Epoch: 47, learning rate: 0.0001, train loss: 0.05371064
+2025-05-22 21:56:17,606 - root - INFO - train average_precision, 0.97027454
+2025-05-22 21:56:17,607 - root - INFO - train roc_auc, 0.97831257
+2025-05-22 21:56:29,164 - root - INFO - validate average_precision, 0.96549877
+2025-05-22 21:56:29,166 - root - INFO - validate roc_auc, 0.97251473
+2025-05-22 21:56:29,166 - root - INFO - validate val_loss, 0.06713716
+2025-05-22 21:57:34,577 - root - INFO - Epoch: 48, learning rate: 0.0001, train loss: 0.05370626
+2025-05-22 21:57:34,580 - root - INFO - train average_precision, 0.97052934
+2025-05-22 21:57:34,581 - root - INFO - train roc_auc, 0.97857983
+2025-05-22 21:57:46,123 - root - INFO - validate average_precision, 0.96577517
+2025-05-22 21:57:46,124 - root - INFO - validate roc_auc, 0.97279435
+2025-05-22 21:57:46,124 - root - INFO - validate val_loss, 0.06626016
+2025-05-22 21:58:51,688 - root - INFO - Epoch: 49, learning rate: 0.0001, train loss: 0.05210247
+2025-05-22 21:58:51,690 - root - INFO - train average_precision, 0.97115031
+2025-05-22 21:58:51,690 - root - INFO - train roc_auc, 0.97892565
+2025-05-22 21:59:03,260 - root - INFO - validate average_precision, 0.96714233
+2025-05-22 21:59:03,262 - root - INFO - validate roc_auc, 0.97381731
+2025-05-22 21:59:03,262 - root - INFO - validate val_loss, 0.06592931
+2025-05-22 22:00:08,803 - root - INFO - Epoch: 50, learning rate: 0.0001, train loss: 0.05362198
+2025-05-22 22:00:08,804 - root - INFO - train average_precision, 0.97104099
+2025-05-22 22:00:08,804 - root - INFO - train roc_auc, 0.97886034
+2025-05-22 22:00:20,377 - root - INFO - validate average_precision, 0.96670670
+2025-05-22 22:00:20,377 - root - INFO - validate roc_auc, 0.97377782
+2025-05-22 22:00:20,377 - root - INFO - validate val_loss, 0.06433504
+2025-05-22 22:01:26,118 - root - INFO - Epoch: 51, learning rate: 0.0001, train loss: 0.05240748
+2025-05-22 22:01:26,121 - root - INFO - train average_precision, 0.97111882
+2025-05-22 22:01:26,121 - root - INFO - train roc_auc, 0.97893188
+2025-05-22 22:01:37,708 - root - INFO - validate average_precision, 0.96647890
+2025-05-22 22:01:37,708 - root - INFO - validate roc_auc, 0.97340723
+2025-05-22 22:01:37,709 - root - INFO - validate val_loss, 0.06565579
+2025-05-22 22:02:43,192 - root - INFO - Epoch: 52, learning rate: 0.0001, train loss: 0.05180694
+2025-05-22 22:02:43,225 - root - INFO - train average_precision, 0.97118236
+2025-05-22 22:02:43,226 - root - INFO - train roc_auc, 0.97904207
+2025-05-22 22:02:54,767 - root - INFO - validate average_precision, 0.96658820
+2025-05-22 22:02:54,768 - root - INFO - validate roc_auc, 0.97348421
+2025-05-22 22:02:54,768 - root - INFO - validate val_loss, 0.06533953
+2025-05-22 22:04:00,701 - root - INFO - Epoch: 53, learning rate: 0.0001, train loss: 0.05330505
+2025-05-22 22:04:00,704 - root - INFO - train average_precision, 0.97080861
+2025-05-22 22:04:00,704 - root - INFO - train roc_auc, 0.97879331
+2025-05-22 22:04:12,340 - root - INFO - validate average_precision, 0.96667084
+2025-05-22 22:04:12,341 - root - INFO - validate roc_auc, 0.97305012
+2025-05-22 22:04:12,342 - root - INFO - validate val_loss, 0.06525926
+2025-05-22 22:05:18,108 - root - INFO - Epoch: 54, learning rate: 0.0001, train loss: 0.05240368
+2025-05-22 22:05:18,128 - root - INFO - train average_precision, 0.97163965
+2025-05-22 22:05:18,128 - root - INFO - train roc_auc, 0.97909794
+2025-05-22 22:05:29,694 - root - INFO - validate average_precision, 0.96757072
+2025-05-22 22:05:29,694 - root - INFO - validate roc_auc, 0.97382061
+2025-05-22 22:05:29,694 - root - INFO - validate val_loss, 0.06746792
+2025-05-22 22:05:29,695 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 22:06:35,357 - root - INFO - Epoch: 55, learning rate: 0.0001, train loss: 0.05181926
+2025-05-22 22:06:35,389 - root - INFO - train average_precision, 0.97144144
+2025-05-22 22:06:35,389 - root - INFO - train roc_auc, 0.97921550
+2025-05-22 22:06:47,089 - root - INFO - validate average_precision, 0.96714332
+2025-05-22 22:06:47,091 - root - INFO - validate roc_auc, 0.97373966
+2025-05-22 22:06:47,091 - root - INFO - validate val_loss, 0.06563980
+2025-05-22 22:07:52,740 - root - INFO - Epoch: 56, learning rate: 0.0001, train loss: 0.05231148
+2025-05-22 22:07:52,743 - root - INFO - train average_precision, 0.97106847
+2025-05-22 22:07:52,744 - root - INFO - train roc_auc, 0.97887113
+2025-05-22 22:08:04,355 - root - INFO - validate average_precision, 0.96684218
+2025-05-22 22:08:04,355 - root - INFO - validate roc_auc, 0.97322702
+2025-05-22 22:08:04,355 - root - INFO - validate val_loss, 0.06709932
+2025-05-22 22:09:09,973 - root - INFO - Epoch: 57, learning rate: 0.0001, train loss: 0.05313607
+2025-05-22 22:09:09,976 - root - INFO - train average_precision, 0.97123068
+2025-05-22 22:09:09,977 - root - INFO - train roc_auc, 0.97897477
+2025-05-22 22:09:21,570 - root - INFO - validate average_precision, 0.96829405
+2025-05-22 22:09:21,570 - root - INFO - validate roc_auc, 0.97451764
+2025-05-22 22:09:21,570 - root - INFO - validate val_loss, 0.06480521
+2025-05-22 22:09:21,571 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 22:10:27,146 - root - INFO - Epoch: 58, learning rate: 0.0001, train loss: 0.05170918
+2025-05-22 22:10:27,149 - root - INFO - train average_precision, 0.97190558
+2025-05-22 22:10:27,149 - root - INFO - train roc_auc, 0.97927654
+2025-05-22 22:10:38,788 - root - INFO - validate average_precision, 0.96871041
+2025-05-22 22:10:38,789 - root - INFO - validate roc_auc, 0.97481068
+2025-05-22 22:10:38,789 - root - INFO - validate val_loss, 0.06444308
+2025-05-22 22:10:38,789 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 22:11:45,970 - root - INFO - Epoch: 59, learning rate: 0.0001, train loss: 0.05202371
+2025-05-22 22:11:46,000 - root - INFO - train average_precision, 0.97135260
+2025-05-22 22:11:46,000 - root - INFO - train roc_auc, 0.97896817
+2025-05-22 22:11:57,643 - root - INFO - validate average_precision, 0.96674698
+2025-05-22 22:11:57,644 - root - INFO - validate roc_auc, 0.97347229
+2025-05-22 22:11:57,644 - root - INFO - validate val_loss, 0.06755086
+2025-05-22 22:13:03,125 - root - INFO - Epoch: 60, learning rate: 0.0001, train loss: 0.05231795
+2025-05-22 22:13:03,125 - root - INFO - train average_precision, 0.97131809
+2025-05-22 22:13:03,126 - root - INFO - train roc_auc, 0.97898276
+2025-05-22 22:13:14,678 - root - INFO - validate average_precision, 0.96908311
+2025-05-22 22:13:14,678 - root - INFO - validate roc_auc, 0.97485962
+2025-05-22 22:13:14,678 - root - INFO - validate val_loss, 0.06436025
+2025-05-22 22:13:14,679 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 22:14:20,124 - root - INFO - Epoch: 61, learning rate: 0.0001, train loss: 0.05186405
+2025-05-22 22:14:20,125 - root - INFO - train average_precision, 0.97207013
+2025-05-22 22:14:20,125 - root - INFO - train roc_auc, 0.97929018
+2025-05-22 22:14:31,669 - root - INFO - validate average_precision, 0.96777743
+2025-05-22 22:14:31,670 - root - INFO - validate roc_auc, 0.97380494
+2025-05-22 22:14:31,670 - root - INFO - validate val_loss, 0.06635478
+2025-05-22 22:15:37,112 - root - INFO - Epoch: 62, learning rate: 0.0001, train loss: 0.05234578
+2025-05-22 22:15:37,115 - root - INFO - train average_precision, 0.97155199
+2025-05-22 22:15:37,115 - root - INFO - train roc_auc, 0.97904501
+2025-05-22 22:15:48,714 - root - INFO - validate average_precision, 0.96684803
+2025-05-22 22:15:48,715 - root - INFO - validate roc_auc, 0.97346835
+2025-05-22 22:15:48,715 - root - INFO - validate val_loss, 0.06524360
+2025-05-22 22:16:54,253 - root - INFO - Epoch: 63, learning rate: 0.0001, train loss: 0.05235207
+2025-05-22 22:16:54,254 - root - INFO - train average_precision, 0.97156883
+2025-05-22 22:16:54,254 - root - INFO - train roc_auc, 0.97907838
+2025-05-22 22:17:05,868 - root - INFO - validate average_precision, 0.96810745
+2025-05-22 22:17:05,868 - root - INFO - validate roc_auc, 0.97449328
+2025-05-22 22:17:05,868 - root - INFO - validate val_loss, 0.06468141
+2025-05-22 22:18:11,577 - root - INFO - Epoch: 64, learning rate: 0.0001, train loss: 0.05187447
+2025-05-22 22:18:11,580 - root - INFO - train average_precision, 0.97149504
+2025-05-22 22:18:11,581 - root - INFO - train roc_auc, 0.97918654
+2025-05-22 22:18:23,160 - root - INFO - validate average_precision, 0.96891164
+2025-05-22 22:18:23,160 - root - INFO - validate roc_auc, 0.97494009
+2025-05-22 22:18:23,160 - root - INFO - validate val_loss, 0.06379798
+2025-05-22 22:19:28,646 - root - INFO - Epoch: 65, learning rate: 0.0001, train loss: 0.05149503
+2025-05-22 22:19:28,646 - root - INFO - train average_precision, 0.97190967
+2025-05-22 22:19:28,647 - root - INFO - train roc_auc, 0.97934391
+2025-05-22 22:19:40,372 - root - INFO - validate average_precision, 0.96969470
+2025-05-22 22:19:40,397 - root - INFO - validate roc_auc, 0.97548967
+2025-05-22 22:19:40,397 - root - INFO - validate val_loss, 0.06318837
+2025-05-22 22:19:40,398 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 22:20:45,872 - root - INFO - Epoch: 66, learning rate: 0.0001, train loss: 0.05229304
+2025-05-22 22:20:45,875 - root - INFO - train average_precision, 0.97199724
+2025-05-22 22:20:45,875 - root - INFO - train roc_auc, 0.97934538
+2025-05-22 22:20:57,375 - root - INFO - validate average_precision, 0.96961257
+2025-05-22 22:20:57,375 - root - INFO - validate roc_auc, 0.97557310
+2025-05-22 22:20:57,375 - root - INFO - validate val_loss, 0.06296340
+2025-05-22 22:22:02,885 - root - INFO - Epoch: 67, learning rate: 0.0001, train loss: 0.05151191
+2025-05-22 22:22:02,921 - root - INFO - train average_precision, 0.97224953
+2025-05-22 22:22:02,922 - root - INFO - train roc_auc, 0.97945601
+2025-05-22 22:22:14,432 - root - INFO - validate average_precision, 0.96843792
+2025-05-22 22:22:14,432 - root - INFO - validate roc_auc, 0.97464191
+2025-05-22 22:22:14,432 - root - INFO - validate val_loss, 0.06368348
+2025-05-22 22:23:19,905 - root - INFO - Epoch: 68, learning rate: 0.0001, train loss: 0.05138065
+2025-05-22 22:23:19,919 - root - INFO - train average_precision, 0.97180742
+2025-05-22 22:23:19,919 - root - INFO - train roc_auc, 0.97940493
+2025-05-22 22:23:31,403 - root - INFO - validate average_precision, 0.97024516
+2025-05-22 22:23:31,403 - root - INFO - validate roc_auc, 0.97566618
+2025-05-22 22:23:31,403 - root - INFO - validate val_loss, 0.06278442
+2025-05-22 22:23:31,404 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 22:24:36,612 - root - INFO - Epoch: 69, learning rate: 0.0001, train loss: 0.05150982
+2025-05-22 22:24:36,613 - root - INFO - train average_precision, 0.97185646
+2025-05-22 22:24:36,613 - root - INFO - train roc_auc, 0.97934653
+2025-05-22 22:24:48,089 - root - INFO - validate average_precision, 0.96946118
+2025-05-22 22:24:48,089 - root - INFO - validate roc_auc, 0.97502206
+2025-05-22 22:24:48,089 - root - INFO - validate val_loss, 0.06422757
+2025-05-22 22:25:54,093 - root - INFO - Epoch: 70, learning rate: 0.0001, train loss: 0.05137555
+2025-05-22 22:25:54,095 - root - INFO - train average_precision, 0.97226530
+2025-05-22 22:25:54,095 - root - INFO - train roc_auc, 0.97959390
+2025-05-22 22:26:05,638 - root - INFO - validate average_precision, 0.96809137
+2025-05-22 22:26:05,638 - root - INFO - validate roc_auc, 0.97460174
+2025-05-22 22:26:05,639 - root - INFO - validate val_loss, 0.06468462
+2025-05-22 22:27:11,375 - root - INFO - Epoch: 71, learning rate: 0.0001, train loss: 0.05077577
+2025-05-22 22:27:11,381 - root - INFO - train average_precision, 0.97251538
+2025-05-22 22:27:11,382 - root - INFO - train roc_auc, 0.97977445
+2025-05-22 22:27:23,005 - root - INFO - validate average_precision, 0.96967200
+2025-05-22 22:27:23,006 - root - INFO - validate roc_auc, 0.97561353
+2025-05-22 22:27:23,006 - root - INFO - validate val_loss, 0.06126894
+2025-05-22 22:28:29,132 - root - INFO - Epoch: 72, learning rate: 0.0001, train loss: 0.05139420
+2025-05-22 22:28:29,160 - root - INFO - train average_precision, 0.97204778
+2025-05-22 22:28:29,161 - root - INFO - train roc_auc, 0.97944821
+2025-05-22 22:28:40,941 - root - INFO - validate average_precision, 0.96935795
+2025-05-22 22:28:40,944 - root - INFO - validate roc_auc, 0.97533461
+2025-05-22 22:28:40,944 - root - INFO - validate val_loss, 0.06278026
+2025-05-22 22:29:47,050 - root - INFO - Epoch: 73, learning rate: 0.0001, train loss: 0.05161179
+2025-05-22 22:29:47,055 - root - INFO - train average_precision, 0.97202581
+2025-05-22 22:29:47,055 - root - INFO - train roc_auc, 0.97935053
+2025-05-22 22:29:58,781 - root - INFO - validate average_precision, 0.96989490
+2025-05-22 22:29:58,781 - root - INFO - validate roc_auc, 0.97568784
+2025-05-22 22:29:58,781 - root - INFO - validate val_loss, 0.06283452
+2025-05-22 22:31:04,918 - root - INFO - Epoch: 74, learning rate: 0.0001, train loss: 0.05151442
+2025-05-22 22:31:04,920 - root - INFO - train average_precision, 0.97230459
+2025-05-22 22:31:04,921 - root - INFO - train roc_auc, 0.97960140
+2025-05-22 22:31:16,619 - root - INFO - validate average_precision, 0.96893212
+2025-05-22 22:31:16,620 - root - INFO - validate roc_auc, 0.97477568
+2025-05-22 22:31:16,620 - root - INFO - validate val_loss, 0.06417319
+2025-05-22 22:32:22,680 - root - INFO - Epoch: 75, learning rate: 0.0001, train loss: 0.05110079
+2025-05-22 22:32:22,681 - root - INFO - train average_precision, 0.97236286
+2025-05-22 22:32:22,681 - root - INFO - train roc_auc, 0.97963685
+2025-05-22 22:32:34,403 - root - INFO - validate average_precision, 0.96805687
+2025-05-22 22:32:34,404 - root - INFO - validate roc_auc, 0.97445714
+2025-05-22 22:32:34,404 - root - INFO - validate val_loss, 0.06258542
+2025-05-22 22:33:40,581 - root - INFO - Epoch: 76, learning rate: 0.0001, train loss: 0.05084425
+2025-05-22 22:33:40,584 - root - INFO - train average_precision, 0.97254756
+2025-05-22 22:33:40,584 - root - INFO - train roc_auc, 0.97958496
+2025-05-22 22:33:52,260 - root - INFO - validate average_precision, 0.96979133
+2025-05-22 22:33:52,260 - root - INFO - validate roc_auc, 0.97563741
+2025-05-22 22:33:52,260 - root - INFO - validate val_loss, 0.06086596
+2025-05-22 22:34:58,606 - root - INFO - Epoch: 77, learning rate: 0.0001, train loss: 0.05086420
+2025-05-22 22:34:58,612 - root - INFO - train average_precision, 0.97276547
+2025-05-22 22:34:58,612 - root - INFO - train roc_auc, 0.97980852
+2025-05-22 22:35:10,322 - root - INFO - validate average_precision, 0.97055685
+2025-05-22 22:35:10,322 - root - INFO - validate roc_auc, 0.97576463
+2025-05-22 22:35:10,322 - root - INFO - validate val_loss, 0.06196614
+2025-05-22 22:35:10,323 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 22:36:16,649 - root - INFO - Epoch: 78, learning rate: 0.0001, train loss: 0.05042375
+2025-05-22 22:36:16,677 - root - INFO - train average_precision, 0.97221891
+2025-05-22 22:36:16,678 - root - INFO - train roc_auc, 0.97958229
+2025-05-22 22:36:28,341 - root - INFO - validate average_precision, 0.97066314
+2025-05-22 22:36:28,341 - root - INFO - validate roc_auc, 0.97640135
+2025-05-22 22:36:28,341 - root - INFO - validate val_loss, 0.06205236
+2025-05-22 22:36:28,342 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 22:37:34,623 - root - INFO - Epoch: 79, learning rate: 0.0001, train loss: 0.05073930
+2025-05-22 22:37:34,658 - root - INFO - train average_precision, 0.97286735
+2025-05-22 22:37:34,658 - root - INFO - train roc_auc, 0.97990443
+2025-05-22 22:37:46,548 - root - INFO - validate average_precision, 0.96939783
+2025-05-22 22:37:46,575 - root - INFO - validate roc_auc, 0.97521319
+2025-05-22 22:37:46,575 - root - INFO - validate val_loss, 0.06446156
+2025-05-22 22:38:52,382 - root - INFO - Epoch: 80, learning rate: 0.0001, train loss: 0.05100156
+2025-05-22 22:38:52,420 - root - INFO - train average_precision, 0.97245238
+2025-05-22 22:38:52,420 - root - INFO - train roc_auc, 0.97971939
+2025-05-22 22:39:04,068 - root - INFO - validate average_precision, 0.96990148
+2025-05-22 22:39:04,068 - root - INFO - validate roc_auc, 0.97530342
+2025-05-22 22:39:04,068 - root - INFO - validate val_loss, 0.06264172
+2025-05-22 22:40:09,865 - root - INFO - Epoch: 81, learning rate: 0.0001, train loss: 0.05168342
+2025-05-22 22:40:09,868 - root - INFO - train average_precision, 0.97235731
+2025-05-22 22:40:09,868 - root - INFO - train roc_auc, 0.97956375
+2025-05-22 22:40:21,526 - root - INFO - validate average_precision, 0.97055977
+2025-05-22 22:40:21,526 - root - INFO - validate roc_auc, 0.97583875
+2025-05-22 22:40:21,527 - root - INFO - validate val_loss, 0.06208678
+2025-05-22 22:41:27,278 - root - INFO - Epoch: 82, learning rate: 0.0001, train loss: 0.05005879
+2025-05-22 22:41:27,280 - root - INFO - train average_precision, 0.97299028
+2025-05-22 22:41:27,281 - root - INFO - train roc_auc, 0.97998982
+2025-05-22 22:41:38,888 - root - INFO - validate average_precision, 0.96976092
+2025-05-22 22:41:38,889 - root - INFO - validate roc_auc, 0.97516278
+2025-05-22 22:41:38,889 - root - INFO - validate val_loss, 0.06395047
+2025-05-22 22:42:44,449 - root - INFO - Epoch: 83, learning rate: 0.0001, train loss: 0.05024372
+2025-05-22 22:42:44,455 - root - INFO - train average_precision, 0.97291455
+2025-05-22 22:42:44,455 - root - INFO - train roc_auc, 0.98002590
+2025-05-22 22:42:56,071 - root - INFO - validate average_precision, 0.97021148
+2025-05-22 22:42:56,071 - root - INFO - validate roc_auc, 0.97513879
+2025-05-22 22:42:56,072 - root - INFO - validate val_loss, 0.06645482
+2025-05-22 22:44:01,692 - root - INFO - Epoch: 84, learning rate: 0.0001, train loss: 0.04996768
+2025-05-22 22:44:01,692 - root - INFO - train average_precision, 0.97323514
+2025-05-22 22:44:01,693 - root - INFO - train roc_auc, 0.98020486
+2025-05-22 22:44:13,269 - root - INFO - validate average_precision, 0.97031551
+2025-05-22 22:44:13,269 - root - INFO - validate roc_auc, 0.97582975
+2025-05-22 22:44:13,269 - root - INFO - validate val_loss, 0.06348786
+2025-05-22 22:45:18,888 - root - INFO - Epoch: 85, learning rate: 0.0001, train loss: 0.05095622
+2025-05-22 22:45:18,905 - root - INFO - train average_precision, 0.97257745
+2025-05-22 22:45:18,906 - root - INFO - train roc_auc, 0.97979261
+2025-05-22 22:45:30,474 - root - INFO - validate average_precision, 0.97047054
+2025-05-22 22:45:30,477 - root - INFO - validate roc_auc, 0.97563445
+2025-05-22 22:45:30,477 - root - INFO - validate val_loss, 0.06479657
+2025-05-22 22:46:36,428 - root - INFO - Epoch: 86, learning rate: 0.0001, train loss: 0.05080461
+2025-05-22 22:46:36,469 - root - INFO - train average_precision, 0.97285444
+2025-05-22 22:46:36,470 - root - INFO - train roc_auc, 0.97984889
+2025-05-22 22:46:48,021 - root - INFO - validate average_precision, 0.97084910
+2025-05-22 22:46:48,021 - root - INFO - validate roc_auc, 0.97578122
+2025-05-22 22:46:48,021 - root - INFO - validate val_loss, 0.06254074
+2025-05-22 22:46:48,022 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 22:47:53,803 - root - INFO - Epoch: 87, learning rate: 0.0001, train loss: 0.04978745
+2025-05-22 22:47:53,806 - root - INFO - train average_precision, 0.97278531
+2025-05-22 22:47:53,807 - root - INFO - train roc_auc, 0.97987305
+2025-05-22 22:48:05,393 - root - INFO - validate average_precision, 0.97115532
+2025-05-22 22:48:05,394 - root - INFO - validate roc_auc, 0.97633493
+2025-05-22 22:48:05,394 - root - INFO - validate val_loss, 0.06286607
+2025-05-22 22:48:05,394 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 22:49:11,065 - root - INFO - Epoch: 88, learning rate: 0.0001, train loss: 0.04992982
+2025-05-22 22:49:11,068 - root - INFO - train average_precision, 0.97286209
+2025-05-22 22:49:11,068 - root - INFO - train roc_auc, 0.97984136
+2025-05-22 22:49:22,614 - root - INFO - validate average_precision, 0.97157367
+2025-05-22 22:49:22,614 - root - INFO - validate roc_auc, 0.97671206
+2025-05-22 22:49:22,614 - root - INFO - validate val_loss, 0.06154012
+2025-05-22 22:49:22,615 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 22:50:28,718 - root - INFO - Epoch: 89, learning rate: 0.0001, train loss: 0.04999485
+2025-05-22 22:50:28,721 - root - INFO - train average_precision, 0.97303849
+2025-05-22 22:50:28,721 - root - INFO - train roc_auc, 0.97984476
+2025-05-22 22:50:40,308 - root - INFO - validate average_precision, 0.97041552
+2025-05-22 22:50:40,308 - root - INFO - validate roc_auc, 0.97565470
+2025-05-22 22:50:40,308 - root - INFO - validate val_loss, 0.06266975
+2025-05-22 22:51:45,814 - root - INFO - Epoch: 90, learning rate: 0.0001, train loss: 0.05029078
+2025-05-22 22:51:45,820 - root - INFO - train average_precision, 0.97269117
+2025-05-22 22:51:45,820 - root - INFO - train roc_auc, 0.97980093
+2025-05-22 22:51:57,360 - root - INFO - validate average_precision, 0.97149085
+2025-05-22 22:51:57,361 - root - INFO - validate roc_auc, 0.97660398
+2025-05-22 22:51:57,362 - root - INFO - validate val_loss, 0.06228718
+2025-05-22 22:53:02,942 - root - INFO - Epoch: 91, learning rate: 0.0001, train loss: 0.04958557
+2025-05-22 22:53:02,945 - root - INFO - train average_precision, 0.97334945
+2025-05-22 22:53:02,945 - root - INFO - train roc_auc, 0.98025182
+2025-05-22 22:53:14,480 - root - INFO - validate average_precision, 0.97206222
+2025-05-22 22:53:14,480 - root - INFO - validate roc_auc, 0.97714318
+2025-05-22 22:53:14,480 - root - INFO - validate val_loss, 0.05977632
+2025-05-22 22:53:14,481 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 22:54:20,093 - root - INFO - Epoch: 92, learning rate: 0.0001, train loss: 0.04969240
+2025-05-22 22:54:20,096 - root - INFO - train average_precision, 0.97323882
+2025-05-22 22:54:20,096 - root - INFO - train roc_auc, 0.98011875
+2025-05-22 22:54:31,672 - root - INFO - validate average_precision, 0.97108307
+2025-05-22 22:54:31,674 - root - INFO - validate roc_auc, 0.97615481
+2025-05-22 22:54:31,674 - root - INFO - validate val_loss, 0.06291503
+2025-05-22 22:55:37,306 - root - INFO - Epoch: 93, learning rate: 0.0001, train loss: 0.04857117
+2025-05-22 22:55:37,309 - root - INFO - train average_precision, 0.97344350
+2025-05-22 22:55:37,309 - root - INFO - train roc_auc, 0.98045016
+2025-05-22 22:55:48,937 - root - INFO - validate average_precision, 0.97173482
+2025-05-22 22:55:48,937 - root - INFO - validate roc_auc, 0.97671356
+2025-05-22 22:55:48,937 - root - INFO - validate val_loss, 0.06182383
+2025-05-22 22:56:54,574 - root - INFO - Epoch: 94, learning rate: 0.0001, train loss: 0.05065058
+2025-05-22 22:56:54,612 - root - INFO - train average_precision, 0.97293833
+2025-05-22 22:56:54,613 - root - INFO - train roc_auc, 0.98001972
+2025-05-22 22:57:06,171 - root - INFO - validate average_precision, 0.97035674
+2025-05-22 22:57:06,172 - root - INFO - validate roc_auc, 0.97527491
+2025-05-22 22:57:06,172 - root - INFO - validate val_loss, 0.06485300
+2025-05-22 22:58:11,735 - root - INFO - Epoch: 95, learning rate: 0.0001, train loss: 0.05009165
+2025-05-22 22:58:11,736 - root - INFO - train average_precision, 0.97301131
+2025-05-22 22:58:11,736 - root - INFO - train roc_auc, 0.97995745
+2025-05-22 22:58:23,320 - root - INFO - validate average_precision, 0.97120721
+2025-05-22 22:58:23,321 - root - INFO - validate roc_auc, 0.97670948
+2025-05-22 22:58:23,321 - root - INFO - validate val_loss, 0.06071051
+2025-05-22 22:59:28,952 - root - INFO - Epoch: 96, learning rate: 0.0001, train loss: 0.04943017
+2025-05-22 22:59:28,969 - root - INFO - train average_precision, 0.97344926
+2025-05-22 22:59:28,969 - root - INFO - train roc_auc, 0.98030801
+2025-05-22 22:59:40,571 - root - INFO - validate average_precision, 0.97054423
+2025-05-22 22:59:40,571 - root - INFO - validate roc_auc, 0.97602398
+2025-05-22 22:59:40,571 - root - INFO - validate val_loss, 0.06207459
+2025-05-22 23:00:46,048 - root - INFO - Epoch: 97, learning rate: 0.0001, train loss: 0.04978483
+2025-05-22 23:00:46,053 - root - INFO - train average_precision, 0.97325419
+2025-05-22 23:00:46,054 - root - INFO - train roc_auc, 0.98015400
+2025-05-22 23:00:57,617 - root - INFO - validate average_precision, 0.97152130
+2025-05-22 23:00:57,617 - root - INFO - validate roc_auc, 0.97644851
+2025-05-22 23:00:57,617 - root - INFO - validate val_loss, 0.06200035
+2025-05-22 23:02:04,341 - root - INFO - Epoch: 98, learning rate: 0.0001, train loss: 0.04939972
+2025-05-22 23:02:04,360 - root - INFO - train average_precision, 0.97405040
+2025-05-22 23:02:04,361 - root - INFO - train roc_auc, 0.98059503
+2025-05-22 23:02:15,948 - root - INFO - validate average_precision, 0.97180401
+2025-05-22 23:02:15,948 - root - INFO - validate roc_auc, 0.97649757
+2025-05-22 23:02:15,948 - root - INFO - validate val_loss, 0.06322890
+2025-05-22 23:03:21,807 - root - INFO - Epoch: 99, learning rate: 0.0001, train loss: 0.04935471
+2025-05-22 23:03:21,808 - root - INFO - train average_precision, 0.97427584
+2025-05-22 23:03:21,809 - root - INFO - train roc_auc, 0.98072682
+2025-05-22 23:03:33,426 - root - INFO - validate average_precision, 0.97233586
+2025-05-22 23:03:33,426 - root - INFO - validate roc_auc, 0.97751374
+2025-05-22 23:03:33,426 - root - INFO - validate val_loss, 0.05933565
+2025-05-22 23:03:33,427 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 23:04:39,897 - root - INFO - Epoch: 100, learning rate: 0.0001, train loss: 0.05002994
+2025-05-22 23:04:39,917 - root - INFO - train average_precision, 0.97331138
+2025-05-22 23:04:39,918 - root - INFO - train roc_auc, 0.98025988
+2025-05-22 23:04:51,671 - root - INFO - validate average_precision, 0.97075056
+2025-05-22 23:04:51,674 - root - INFO - validate roc_auc, 0.97638513
+2025-05-22 23:04:51,674 - root - INFO - validate val_loss, 0.06165211
+2025-05-22 23:05:57,232 - root - INFO - Epoch: 101, learning rate: 0.0001, train loss: 0.04909341
+2025-05-22 23:05:57,237 - root - INFO - train average_precision, 0.97325563
+2025-05-22 23:05:57,238 - root - INFO - train roc_auc, 0.98027918
+2025-05-22 23:06:08,783 - root - INFO - validate average_precision, 0.97140711
+2025-05-22 23:06:08,786 - root - INFO - validate roc_auc, 0.97631985
+2025-05-22 23:06:08,786 - root - INFO - validate val_loss, 0.06143567
+2025-05-22 23:07:41,756 - root - INFO - Epoch: 102, learning rate: 0.0001, train loss: 0.04836224
+2025-05-22 23:07:41,804 - root - INFO - train average_precision, 0.97394005
+2025-05-22 23:07:41,804 - root - INFO - train roc_auc, 0.98058513
+2025-05-22 23:07:58,184 - root - INFO - validate average_precision, 0.97231882
+2025-05-22 23:07:58,186 - root - INFO - validate roc_auc, 0.97758264
+2025-05-22 23:07:58,186 - root - INFO - validate val_loss, 0.05987028
+2025-05-22 23:09:36,052 - root - INFO - Epoch: 103, learning rate: 0.0001, train loss: 0.04948724
+2025-05-22 23:09:36,093 - root - INFO - train average_precision, 0.97366332
+2025-05-22 23:09:36,093 - root - INFO - train roc_auc, 0.98033096
+2025-05-22 23:09:50,921 - root - INFO - validate average_precision, 0.97161663
+2025-05-22 23:09:50,923 - root - INFO - validate roc_auc, 0.97652833
+2025-05-22 23:09:50,923 - root - INFO - validate val_loss, 0.06228490
+2025-05-22 23:11:15,502 - root - INFO - Epoch: 104, learning rate: 0.0001, train loss: 0.04886534
+2025-05-22 23:11:15,557 - root - INFO - train average_precision, 0.97399832
+2025-05-22 23:11:15,558 - root - INFO - train roc_auc, 0.98057192
+2025-05-22 23:11:29,597 - root - INFO - validate average_precision, 0.97241746
+2025-05-22 23:11:29,598 - root - INFO - validate roc_auc, 0.97753460
+2025-05-22 23:11:29,598 - root - INFO - validate val_loss, 0.05958679
+2025-05-22 23:11:29,600 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 23:12:52,967 - root - INFO - Epoch: 105, learning rate: 0.0001, train loss: 0.04878898
+2025-05-22 23:12:53,024 - root - INFO - train average_precision, 0.97380244
+2025-05-22 23:12:53,024 - root - INFO - train roc_auc, 0.98046163
+2025-05-22 23:13:07,580 - root - INFO - validate average_precision, 0.97190467
+2025-05-22 23:13:07,582 - root - INFO - validate roc_auc, 0.97684839
+2025-05-22 23:13:07,582 - root - INFO - validate val_loss, 0.06182181
+2025-05-22 23:14:31,839 - root - INFO - Epoch: 106, learning rate: 0.0001, train loss: 0.04998892
+2025-05-22 23:14:31,872 - root - INFO - train average_precision, 0.97374534
+2025-05-22 23:14:31,873 - root - INFO - train roc_auc, 0.98048464
+2025-05-22 23:14:45,832 - root - INFO - validate average_precision, 0.97189093
+2025-05-22 23:14:45,836 - root - INFO - validate roc_auc, 0.97702113
+2025-05-22 23:14:45,836 - root - INFO - validate val_loss, 0.06055875
+2025-05-22 23:16:07,113 - root - INFO - Epoch: 107, learning rate: 0.0001, train loss: 0.04877363
+2025-05-22 23:16:07,172 - root - INFO - train average_precision, 0.97411277
+2025-05-22 23:16:07,173 - root - INFO - train roc_auc, 0.98071685
+2025-05-22 23:16:20,869 - root - INFO - validate average_precision, 0.97176348
+2025-05-22 23:16:20,871 - root - INFO - validate roc_auc, 0.97684959
+2025-05-22 23:16:20,871 - root - INFO - validate val_loss, 0.06206888
+2025-05-22 23:17:43,245 - root - INFO - Epoch: 108, learning rate: 0.0001, train loss: 0.04872168
+2025-05-22 23:17:43,314 - root - INFO - train average_precision, 0.97390377
+2025-05-22 23:17:43,317 - root - INFO - train roc_auc, 0.98053797
+2025-05-22 23:17:57,575 - root - INFO - validate average_precision, 0.97297737
+2025-05-22 23:17:57,578 - root - INFO - validate roc_auc, 0.97768677
+2025-05-22 23:17:57,578 - root - INFO - validate val_loss, 0.05894595
+2025-05-22 23:17:57,579 - root - INFO - save model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 23:19:17,499 - root - INFO - Epoch: 109, learning rate: 0.0001, train loss: 0.04918023
+2025-05-22 23:19:17,542 - root - INFO - train average_precision, 0.97384566
+2025-05-22 23:19:17,542 - root - INFO - train roc_auc, 0.98054927
+2025-05-22 23:19:31,739 - root - INFO - validate average_precision, 0.97047842
+2025-05-22 23:19:31,747 - root - INFO - validate roc_auc, 0.97571758
+2025-05-22 23:19:31,747 - root - INFO - validate val_loss, 0.06292829
+2025-05-22 23:20:47,262 - root - INFO - Epoch: 110, learning rate: 0.0001, train loss: 0.04884837
+2025-05-22 23:20:47,313 - root - INFO - train average_precision, 0.97391000
+2025-05-22 23:20:47,313 - root - INFO - train roc_auc, 0.98061795
+2025-05-22 23:21:00,129 - root - INFO - validate average_precision, 0.97243464
+2025-05-22 23:21:00,132 - root - INFO - validate roc_auc, 0.97753575
+2025-05-22 23:21:00,132 - root - INFO - validate val_loss, 0.05979478
+2025-05-22 23:22:12,707 - root - INFO - Epoch: 111, learning rate: 0.0001, train loss: 0.04853457
+2025-05-22 23:22:12,779 - root - INFO - train average_precision, 0.97398616
+2025-05-22 23:22:12,780 - root - INFO - train roc_auc, 0.98063763
+2025-05-22 23:22:25,737 - root - INFO - validate average_precision, 0.97274785
+2025-05-22 23:22:25,740 - root - INFO - validate roc_auc, 0.97782360
+2025-05-22 23:22:25,740 - root - INFO - validate val_loss, 0.06013625
+2025-05-22 23:23:40,543 - root - INFO - Epoch: 112, learning rate: 0.0001, train loss: 0.04912378
+2025-05-22 23:23:40,584 - root - INFO - train average_precision, 0.97432420
+2025-05-22 23:23:40,584 - root - INFO - train roc_auc, 0.98078447
+2025-05-22 23:23:53,772 - root - INFO - validate average_precision, 0.97148391
+2025-05-22 23:23:53,774 - root - INFO - validate roc_auc, 0.97665346
+2025-05-22 23:23:53,775 - root - INFO - validate val_loss, 0.06128886
+2025-05-22 23:25:11,121 - root - INFO - Epoch: 113, learning rate: 0.0001, train loss: 0.04824102
+2025-05-22 23:25:11,193 - root - INFO - train average_precision, 0.97426020
+2025-05-22 23:25:11,194 - root - INFO - train roc_auc, 0.98079746
+2025-05-22 23:25:24,993 - root - INFO - validate average_precision, 0.97246993
+2025-05-22 23:25:24,996 - root - INFO - validate roc_auc, 0.97716539
+2025-05-22 23:25:24,996 - root - INFO - validate val_loss, 0.06170216
+2025-05-22 23:26:41,594 - root - INFO - Epoch: 114, learning rate: 0.0001, train loss: 0.04861223
+2025-05-22 23:26:41,653 - root - INFO - train average_precision, 0.97383036
+2025-05-22 23:26:41,654 - root - INFO - train roc_auc, 0.98056824
+2025-05-22 23:26:54,895 - root - INFO - validate average_precision, 0.97152404
+2025-05-22 23:26:54,897 - root - INFO - validate roc_auc, 0.97684823
+2025-05-22 23:26:54,897 - root - INFO - validate val_loss, 0.06002534
+2025-05-22 23:28:09,402 - root - INFO - Epoch: 115, learning rate: 0.0001, train loss: 0.04896087
+2025-05-22 23:28:09,432 - root - INFO - train average_precision, 0.97381670
+2025-05-22 23:28:09,433 - root - INFO - train roc_auc, 0.98051174
+2025-05-22 23:28:22,356 - root - INFO - validate average_precision, 0.97011698
+2025-05-22 23:28:22,357 - root - INFO - validate roc_auc, 0.97526129
+2025-05-22 23:28:22,358 - root - INFO - validate val_loss, 0.06469730
+2025-05-22 23:29:36,704 - root - INFO - Epoch: 116, learning rate: 0.0001, train loss: 0.04834436
+2025-05-22 23:29:36,763 - root - INFO - train average_precision, 0.97359346
+2025-05-22 23:29:36,764 - root - INFO - train roc_auc, 0.98046600
+2025-05-22 23:29:49,681 - root - INFO - validate average_precision, 0.97185474
+2025-05-22 23:29:49,684 - root - INFO - validate roc_auc, 0.97697806
+2025-05-22 23:29:49,684 - root - INFO - validate val_loss, 0.05959411
+2025-05-22 23:31:02,832 - root - INFO - Epoch: 117, learning rate: 0.0001, train loss: 0.04887454
+2025-05-22 23:31:02,875 - root - INFO - train average_precision, 0.97432318
+2025-05-22 23:31:02,875 - root - INFO - train roc_auc, 0.98083243
+2025-05-22 23:31:15,766 - root - INFO - validate average_precision, 0.97092592
+2025-05-22 23:31:15,774 - root - INFO - validate roc_auc, 0.97621803
+2025-05-22 23:31:15,774 - root - INFO - validate val_loss, 0.06200840
+2025-05-22 23:32:28,565 - root - INFO - Epoch: 118, learning rate: 0.0001, train loss: 0.04875966
+2025-05-22 23:32:28,619 - root - INFO - train average_precision, 0.97441421
+2025-05-22 23:32:28,620 - root - INFO - train roc_auc, 0.98076014
+2025-05-22 23:32:41,334 - root - INFO - validate average_precision, 0.97216635
+2025-05-22 23:32:41,337 - root - INFO - validate roc_auc, 0.97712457
+2025-05-22 23:32:41,337 - root - INFO - validate val_loss, 0.06147173
+2025-05-22 23:33:54,620 - root - INFO - Epoch: 119, learning rate: 0.0001, train loss: 0.04932151
+2025-05-22 23:33:54,684 - root - INFO - train average_precision, 0.97422955
+2025-05-22 23:33:54,684 - root - INFO - train roc_auc, 0.98072512
+2025-05-22 23:34:07,301 - root - INFO - validate average_precision, 0.97243666
+2025-05-22 23:34:07,303 - root - INFO - validate roc_auc, 0.97755022
+2025-05-22 23:34:07,303 - root - INFO - validate val_loss, 0.05910410
+2025-05-22 23:35:28,454 - root - INFO - Epoch: 120, learning rate: 0.0001, train loss: 0.04887810
+2025-05-22 23:35:28,503 - root - INFO - train average_precision, 0.97418147
+2025-05-22 23:35:28,503 - root - INFO - train roc_auc, 0.98075596
+2025-05-22 23:35:41,995 - root - INFO - validate average_precision, 0.97218931
+2025-05-22 23:35:41,997 - root - INFO - validate roc_auc, 0.97697140
+2025-05-22 23:35:41,997 - root - INFO - validate val_loss, 0.06149645
+2025-05-22 23:37:09,458 - root - INFO - Epoch: 121, learning rate: 0.0001, train loss: 0.04893232
+2025-05-22 23:37:09,518 - root - INFO - train average_precision, 0.97422900
+2025-05-22 23:37:09,518 - root - INFO - train roc_auc, 0.98079247
+2025-05-22 23:37:25,479 - root - INFO - validate average_precision, 0.97166992
+2025-05-22 23:37:25,480 - root - INFO - validate roc_auc, 0.97683830
+2025-05-22 23:37:25,481 - root - INFO - validate val_loss, 0.06085729
+2025-05-22 23:38:57,768 - root - INFO - Epoch: 122, learning rate: 0.0001, train loss: 0.04865831
+2025-05-22 23:38:57,830 - root - INFO - train average_precision, 0.97417812
+2025-05-22 23:38:57,831 - root - INFO - train roc_auc, 0.98077366
+2025-05-22 23:39:13,647 - root - INFO - validate average_precision, 0.97072328
+2025-05-22 23:39:13,648 - root - INFO - validate roc_auc, 0.97559126
+2025-05-22 23:39:13,649 - root - INFO - validate val_loss, 0.06383500
+2025-05-22 23:40:45,996 - root - INFO - Epoch: 123, learning rate: 0.0001, train loss: 0.04762652
+2025-05-22 23:40:46,055 - root - INFO - train average_precision, 0.97463018
+2025-05-22 23:40:46,056 - root - INFO - train roc_auc, 0.98098990
+2025-05-22 23:41:02,916 - root - INFO - validate average_precision, 0.97262706
+2025-05-22 23:41:02,925 - root - INFO - validate roc_auc, 0.97742965
+2025-05-22 23:41:02,925 - root - INFO - validate val_loss, 0.06034748
+2025-05-22 23:41:02,935 - root - INFO - load model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 23:41:02,998 - root - INFO - get final performance on dataset mooc...
+2025-05-22 23:41:18,826 - root - INFO - load model ./saved_models//mooc/CRAFT/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2/CRAFT_seed0_batchsize200_num_neighbors30_dropout0.1_numlayers2.pkl
+2025-05-22 23:41:18,855 - root - INFO - test average_precision, 0.96128916
+2025-05-22 23:41:18,855 - root - INFO - test roc_auc, 0.96673260
+2025-05-22 23:41:18,855 - root - INFO - test val_loss, 0.10096352
+2025-05-22 23:43:30,476 - root - INFO - test average_precision, 0.96128916
+2025-05-22 23:43:30,502 - root - INFO - test roc_auc, 0.96673260
+2025-05-22 23:43:30,502 - root - INFO - test val_loss, 0.10096352
+2025-05-22 23:43:30,503 - root - INFO - test mrr, 0.62537760
+2025-05-22 23:43:30,503 - root - INFO - Run 1 cost 10052.31 seconds.
+2025-05-22 23:43:30,515 - root - INFO - metrics over 1 runs:
+2025-05-22 23:43:30,515 - root - INFO - test average_precision, [0.9612891591929394]
+2025-05-22 23:43:30,515 - root - INFO - average test average_precision, 0.96128916 ± nan
+2025-05-22 23:43:30,516 - root - INFO - test roc_auc, [0.9667326048491192]
+2025-05-22 23:43:30,516 - root - INFO - average test roc_auc, 0.96673260 ± nan
+2025-05-22 23:43:30,516 - root - INFO - test val_loss, [0.100963523707874]
+2025-05-22 23:43:30,516 - root - INFO - average test val_loss, 0.10096352 ± nan
+2025-05-22 23:43:30,516 - root - INFO - test mrr, [0.6253776]
+2025-05-22 23:43:30,516 - root - INFO - average test mrr, 0.62537760 ± nan
