@@ -144,6 +144,17 @@ def evaluate_model_link_prediction_multi_negs(model_name: str, model: nn.Module,
                 src_node_embeddings, dst_node_embeddings = model[0].compute_src_dst_node_temporal_embeddings(src_node_ids=src_node_ids, dst_node_ids=dst_node_ids, node_interact_times=node_interact_times)
                 batch_src_node_embeddings, batch_dst_node_embeddings = src_node_embeddings[:len(batch_src_node_ids)], dst_node_embeddings[:len(batch_dst_node_ids)]
                 batch_neg_src_node_embeddings, batch_neg_dst_node_embeddings = src_node_embeddings[len(batch_src_node_ids):], dst_node_embeddings[len(batch_dst_node_ids):]
+            elif model_name in ['SASRec', 'SGNNHN']:
+                neighbor_node_ids, _, _=neighbor_sampler.get_historical_neighbors_left(node_ids=batch_src_node_ids, node_interact_times=batch_node_interact_times, num_neighbors=num_neighbors)
+                neighbor_num=(neighbor_node_ids!=0).sum(axis=1)
+                batch_neg_dst_node_ids = batch_neg_dst_node_ids.reshape(original_batch_size,-1)
+                pos_item = torch.from_numpy(batch_dst_node_ids)
+                neg_item = torch.from_numpy(batch_neg_dst_node_ids)
+                items = torch.cat([pos_item.unsqueeze(1), neg_item], dim=1)
+                batch_data=[torch.from_numpy(neighbor_node_ids), torch.from_numpy(neighbor_num), items]
+                positive_probabilities, negative_probabilities = model[0].predict(batch_data)
+                negative_probabilities = negative_probabilities.flatten().cpu().numpy()
+                positive_probabilities = positive_probabilities.flatten().cpu().numpy()
             elif model_name in ['CRAFT']:
                 src_neighb_seq, _, src_neighb_interact_times=neighbor_sampler.get_historical_neighbors_left(node_ids=batch_src_node_ids, node_interact_times=batch_node_interact_times, num_neighbors=num_neighbors)
                 neighbor_num=(src_neighb_seq!=0).sum(axis=1)
@@ -165,7 +176,7 @@ def evaluate_model_link_prediction_multi_negs(model_name: str, model: nn.Module,
                 positive_probabilities = positive_probabilities.flatten().cpu().numpy()
             else:
                 raise ValueError(f"Wrong value for model_name {model_name}!")
-            if model_name not in ['CRAFT']:
+            if model_name not in ['CRAFT', 'SASRec', 'SGNNHN']:
                 if 'BCE' in loss_type:
                 # get positive and negative probabilities, shape (batch_size, )
                     positive_probabilities = model[1](
@@ -298,6 +309,15 @@ def evaluate_model_link_prediction(model_name: str, model: nn.Module, neighbor_s
                 src_node_embeddings, dst_node_embeddings = model[0].compute_src_dst_node_temporal_embeddings(src_node_ids=src_node_ids, dst_node_ids=dst_node_ids, node_interact_times=node_interact_times)
                 batch_src_node_embeddings, batch_neg_src_node_embeddings = src_node_embeddings[:len(batch_src_node_ids)], src_node_embeddings[len(batch_src_node_ids):]
                 batch_dst_node_embeddings, batch_neg_dst_node_embeddings = dst_node_embeddings[:len(batch_dst_node_ids)], dst_node_embeddings[len(batch_dst_node_ids):]
+            elif model_name in ['SASRec', 'SGNNHN']:
+                neighbor_node_ids, _, _=neighbor_sampler.get_historical_neighbors_left(node_ids=batch_src_node_ids, node_interact_times=batch_node_interact_times, num_neighbors=num_neighbors)
+                neighbor_num=(neighbor_node_ids!=0).sum(axis=1)
+                pos_item = torch.from_numpy(batch_dst_node_ids)
+                neg_item = torch.from_numpy(batch_neg_dst_node_ids)
+                items = torch.cat([pos_item.unsqueeze(1), neg_item.unsqueeze(1)], dim=1)
+                batch_data=[torch.from_numpy(neighbor_node_ids), torch.from_numpy(neighbor_num), items]
+                positive_probabilities, negative_probabilities = model[0].predict(batch_data)
+                negative_probabilities = negative_probabilities.flatten()
             elif model_name in ['CRAFT']:
                 src_neighb_seq, _, src_neighb_interact_times=neighbor_sampler.get_historical_neighbors_left(node_ids=batch_src_node_ids, node_interact_times=batch_node_interact_times, num_neighbors=num_neighbors)
                 neighbor_num=(src_neighb_seq!=0).sum(axis=1)
@@ -320,7 +340,7 @@ def evaluate_model_link_prediction(model_name: str, model: nn.Module, neighbor_s
                 raise ValueError(f"Wrong value for model_name {model_name}!")
             if to_test_mask.sum() == 0:
                 continue
-            if model_name not in ['CRAFT']:
+            if model_name not in ['CRAFT', 'SASRec', 'SGNNHN']:
                 if 'BCE' in loss_type:
                 # get positive and negative probabilities, shape (batch_size, )
                     positive_probabilities = model[1](

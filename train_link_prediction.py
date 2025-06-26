@@ -24,7 +24,8 @@ from utils.metrics import get_link_prediction_metrics
 from utils.DataLoader import get_idx_data_loader, get_link_prediction_data
 from utils.EarlyStopping import EarlyStopping
 from utils.load_configs import get_link_prediction_args
-
+from models.SASRec import SASRec
+from models.SGNNHN import SGNNHN
 def train_epoch(model, args, logger, epoch, train_idx_data_loader, train_neighbor_sampler, train_neg_edge_sampler, train_data, optimizer, loss_func, full_neighbor_sampler, val_data, val_idx_data_loader, val_neg_edge_sampler, full_data):
         model.train()
         if args.model_name not in ['CRAFT']:
@@ -103,6 +104,19 @@ def train_epoch(model, args, logger, epoch, train_idx_data_loader, train_neighbo
                 src_node_embeddings, dst_node_embeddings = model[0].compute_src_dst_node_temporal_embeddings(src_node_ids=src_node_ids, dst_node_ids=dst_node_ids, node_interact_times=node_interact_times)
                 batch_src_node_embeddings, batch_neg_src_node_embeddings = src_node_embeddings[:len(batch_src_node_ids)], src_node_embeddings[len(batch_src_node_ids):]
                 batch_dst_node_embeddings, batch_neg_dst_node_embeddings = dst_node_embeddings[:len(batch_dst_node_ids)], dst_node_embeddings[len(batch_dst_node_ids):]
+            elif args.model_name in ['SASRec', 'SGNNHN']:
+                neighbor_node_ids, _, _=train_neighbor_sampler.get_historical_neighbors_left(node_ids=batch_src_node_ids, node_interact_times=batch_node_interact_times, num_neighbors=args.num_neighbors)
+                neighbor_num=(neighbor_node_ids!=0).sum(axis=1)
+                if neighbor_num.sum() == 0:
+                    continue
+                pos_item = torch.from_numpy(batch_dst_node_ids)
+                neg_item = torch.from_numpy(batch_neg_dst_node_ids)
+                test_items = torch.cat([pos_item, neg_item], dim=0)
+                batch_data=[torch.from_numpy(neighbor_node_ids), torch.from_numpy(neighbor_num), test_items]
+                batch_src_node_embeddings, dst_node_embeddings = model[0].calculate_loss(batch_data)
+                batch_dst_node_embeddings = dst_node_embeddings[:len(pos_item)]
+                batch_neg_dst_node_embeddings = dst_node_embeddings[len(pos_item):]
+                batch_neg_src_node_embeddings = batch_src_node_embeddings
             elif args.model_name in ['CRAFT']:
                 src_neighb_seq, _, src_neighb_interact_times = train_neighbor_sampler.get_historical_neighbors_left(node_ids=batch_src_node_ids, node_interact_times=batch_node_interact_times, num_neighbors=args.num_neighbors)
                 neighbor_num=(src_neighb_seq!=0).sum(axis=1)
@@ -224,6 +238,10 @@ def get_model(args, train_data, node_raw_features, edge_raw_features, train_neig
                                         time_feat_dim=args.time_feat_dim, channel_embedding_dim=args.channel_embedding_dim, patch_size=args.patch_size,
                                         num_layers=args.num_layers, num_heads=args.num_heads, dropout=args.dropout,
                                         max_input_sequence_length=args.max_input_sequence_length, device=args.device)
+    elif args.model_name == 'SASRec':
+        dynamic_backbone = SASRec(args.num_layers, args.num_heads, args.embedding_size, args.inner_size, args.hidden_dropout, args.attn_dropout_prob, args.hidden_act, args.layer_norm_eps, args.initializer_range, args.item_size, max_seq_length = args.num_neighbors, device=args.device)
+    elif args.model_name == 'SGNNHN':
+        dynamic_backbone = SGNNHN(args.embedding_size, args.step, args.device, args.scale, args.item_size, args.dropout, args.num_neighbors, loss_type=args.loss)
     elif args.model_name in ['CRAFT']:
         dynamic_backbone = CRAFT(args.num_layers, args.num_heads, args.embedding_size, args.hidden_dropout, args.attn_dropout_prob, args.hidden_act, args.layer_norm_eps, args.initializer_range, args.item_size, max_seq_length = args.num_neighbors, device=args.device, loss_type=args.loss, use_pos=args.use_pos, input_cat_time_intervals=args.input_cat_time_intervals, output_cat_time_intervals=args.output_cat_time_intervals, output_cat_repeat_times=args.output_cat_repeat_times, num_output_layer=args.num_output_layer, emb_dropout_prob=args.emb_dropout_prob, skip_connection=args.skip_connection)
     else:
@@ -232,7 +250,7 @@ def get_model(args, train_data, node_raw_features, edge_raw_features, train_neig
         link_predictor = MergeLayer(input_dim1=args.output_dim, input_dim2=args.output_dim, hidden_dim=args.output_dim, output_dim=1)
     elif args.merge in ['mul']:
         link_predictor = MulMergeLayer(scale=args.scale)
-    if args.model_name in ['CRAFT']:
+    if args.model_name in ['CRAFT', 'SASRec', 'SGNNHN']:
         dynamic_backbone.set_min_idx(src_min_idx=args.src_min_idx, dst_min_idx=args.dst_min_idx)
     if args.model_name not in ['CRAFT']:
         model = nn.Sequential(dynamic_backbone, link_predictor)
