@@ -1,3 +1,11 @@
+"""
+SASRec: Self-Attentive Sequential Recommendation
+https://arxiv.org/abs/1808.09781
+
+This implementation is adopted from RecBole: 
+https://github.com/RUCAIBox/RecBole/blob/master/recbole/model/sequential_recommender/sasrec.py
+"""
+
 import torch
 from torch import nn
 import torch.nn.functional as fn

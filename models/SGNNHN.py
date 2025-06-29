@@ -1,3 +1,11 @@
+"""
+SGNN-HN: Star Graph Neural Networks for Session-based Recommendation
+https://dl.acm.org/doi/10.1145/3340531.3412014
+
+This implementation is adopted from SGNN-HN: 
+https://github.com/RUCAIBox/RecBole-GNN/blob/main/recbole_gnn/model/sequential_recommender/sgnnhn.py
+"""
+
 import math
 import numpy as np
 import torch
