@@ -198,6 +198,9 @@ def get_link_prediction_data(dataset_name: str, val_ratio: float = 0.15, test_ra
         src_node_ids = src_node_ids + 1
         dst_node_ids = dst_node_ids + 1
         edge_ids = edge_ids + 1
+        # TGB's test negatives are raw node ids (cached or freshly built above), so they must
+        # take the same shift; otherwise every negative is scored as node id - 1.
+        test_ns = test_ns + 1
 
         MAX_FEAT_DIM = 172
         if not use_node_feat:
